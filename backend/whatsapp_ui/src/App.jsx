@@ -3,6 +3,7 @@ import { Routes, Route, NavLink } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import WhatsApp from './pages/WhatsApp'
 import Discord from './pages/Discord'
+import Meets from './pages/Meets'
 import About from './pages/About'
 import './styles.css'
 
@@ -15,6 +16,7 @@ export default function App() {
           <NavLink to="/" end>Dashboard</NavLink>
           <NavLink to="/whatsapp">WhatsApp</NavLink>
           <NavLink to="/discord">Discord</NavLink>
+          <NavLink to="/meets">Meets</NavLink>
           <NavLink to="/about">About</NavLink>
         </nav>
       </header>
@@ -24,6 +26,7 @@ export default function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/whatsapp" element={<WhatsApp />} />
           <Route path="/discord" element={<Discord />} />
+          <Route path="/meets" element={<Meets />} />
           <Route path="/about" element={<About />} />
         </Routes>
       </main>
