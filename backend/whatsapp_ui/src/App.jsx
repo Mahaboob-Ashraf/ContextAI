@@ -5,11 +5,13 @@ import WhatsApp from './pages/WhatsApp'
 import Discord from './pages/Discord'
 import Meets from './pages/Meets'
 import About from './pages/About'
+import { ShaderBackground } from './components/ShaderBackground'
 import './styles.css'
 
 export default function App() {
   return (
     <div className="app-root">
+      <ShaderBackground />
       <header className="topbar">
         <div className="brand">ContextAI</div>
         <nav className="nav">

@@ -24,16 +24,18 @@ body{
 ::-webkit-scrollbar-thumb{background:linear-gradient(135deg,var(--gold),var(--purple));border-radius:10px}
 ::-webkit-scrollbar-thumb:hover{background:linear-gradient(135deg,var(--purple),var(--gold))}
 
-.app-root{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.app-root{display:flex;flex-direction:column;height:100vh;overflow:hidden;position:relative}
 .topbar{
   display:flex;
   align-items:center;
   justify-content:space-between;
   padding:18px 28px;
-  background:rgba(26,26,26,0.7);
+  background:rgba(26,26,26,0.85);
   backdrop-filter:blur(20px);
   border-bottom:1px solid rgba(255,215,0,0.2);
   box-shadow:0 8px 32px 0 rgba(0,0,0,0.37);
+  position:relative;
+  z-index:10;
 }
 .topbar .brand{
   font-size:20px;
@@ -76,7 +78,7 @@ body{
   background:var(--gold);
   border-radius:2px 2px 0 0;
 }
-.main-area{flex:1;padding:28px;overflow:auto}
+.main-area{flex:1;padding:28px;overflow:auto;position:relative;z-index:1}
 
 .page h2{font-size:20px;margin-bottom:16px;color:var(--gold)}
 .page h3{font-size:16px;margin:20px 0 12px;color:#e6e6e6}
@@ -938,6 +940,34 @@ body{
   box-shadow:0 8px 24px rgba(0,0,0,0.3);
 }
 .summary-card:hover::before{opacity:1}
+
+/* Source Badge */
+.source-badge{
+  position:absolute;
+  top:10px;
+  left:10px;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:rgba(26,26,26,0.9);
+  border:1.5px solid rgba(255,215,0,0.3);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  z-index:5;
+  backdrop-filter:blur(10px);
+  box-shadow:0 2px 8px rgba(0,0,0,0.3);
+  transition:all 0.3s;
+}
+.source-badge svg{
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+}
+.source-badge:hover{
+  transform:scale(1.15);
+  border-color:rgba(255,215,0,0.6);
+  box-shadow:0 4px 12px rgba(255,215,0,0.2);
+}
 
 /* Card Action Buttons */
 .card-delete-btn,.card-goto-btn{
