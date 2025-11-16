@@ -88,9 +88,19 @@ export default function Dashboard() {
   }
 
   function goToChat(chatId) {
-    // Save the chatId to localStorage so WhatsApp page can auto-select it
-    localStorage.setItem('contextai_selected_chat', chatId)
-    navigate('/whatsapp')
+    const summary = summaries[chatId]
+    if (!summary) return
+    
+    // Navigate to appropriate page based on source
+    if (summary.source === 'discord') {
+      navigate('/discord')
+    } else if (summary.source === 'meets') {
+      navigate('/meets')
+    } else {
+      // Default to WhatsApp
+      localStorage.setItem('contextai_selected_chat', chatId)
+      navigate('/whatsapp')
+    }
   }
 
   async function askAI() {
@@ -190,7 +200,7 @@ export default function Dashboard() {
           className="search-input-dashboard"
         />
         <button onClick={refreshFromServer} disabled={loading} className="refresh-btn">
-          {loading ? '⏳ Refreshing...' : '🔄 Refresh'}
+          {loading ? '⏳ Refreshing...' : '� Refresh'}
         </button>
         <button onClick={clearCache} className="clear-btn">🗑️ Clear Cache</button>
       </div>
@@ -231,7 +241,7 @@ export default function Dashboard() {
               <div className="summary-head">
                 <div className="chat-name">{s.isGroup ? '👥' : '👤'} {s.chatName}</div>
                 <div className="meta">
-                  💬 {s.textMessages} msgs • 
+                  � {s.textMessages} msgs • 
                   👥 {Object.keys(s.participants || {}).length} participants
                 </div>
               </div>
