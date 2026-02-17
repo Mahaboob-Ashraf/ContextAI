@@ -201,7 +201,7 @@ Ask questions across all analyzed chats with consolidated AI responses.
 The backend uses a hybrid approach:
 - Express REST API for HTTP endpoints
 - WhatsApp Web.js for WhatsApp integration
-- In-memory state for chat lists and bot memory
+- In-memory state for chat lists and bot memory.
 - File-based storage for configuration
 - LocalStorage on frontend for caching
 
