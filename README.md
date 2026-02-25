@@ -1,213 +1,45 @@
-# ContextAI
+# WhatsApp Chat Analyzer (RAG System) 💬🔍
 
-A WhatsApp chat analysis platform with AI-powered summaries, intelligent bot responses, and multi-key load balancing. Analyzes group and individual chats using Google's Gemini 2.5 Flash, with support for image understanding and conversation memory.
+An end-to-end Retrieval-Augmented Generation (RAG) pipeline built to ingest, process, and structure noisy WhatsApp chat exports into actionable insights.
 
-## What It Does
+## 🚀 Hackathon Project Overview
+Group chats often contain a chaotic mix of casual conversation, critical decisions, and hidden action items. This project was developed during a hackathon to solve the problem of information retrieval in unstructured messaging apps. By leveraging Large Language Models (LLMs) and advanced vector search, this system automatically parses raw chat logs and allows users to query the chat history for actionable tasks, key decisions, and facts.
 
-This tool connects to WhatsApp Web and provides:
+## 🛠️ Tech Stack
+* **Language:** Python
+* **AI/LLM Engine:** Google Gemini API
+* **Database & Vector Search:** PostgreSQL with `pgvector`
+* **Data Processing:** Regex & Custom Parsing Logic
 
-- **AI Chat Summaries**: Analyze up to 1000 messages with deep or moderate analysis modes
-- **Intelligent Bot Mode**: Auto-responds in enabled groups with personality-based responses
-- **Image Analysis**: Uses Gemini Vision to understand and respond to images
-- **Q&A System**: Ask questions about specific chats or across your entire chat history
-- **Multi-Key Load Balancing**: Distributes API load across unlimited Gemini keys with intelligent failover
-- **Conversation Memory**: Bot maintains context across 50 messages per chat
+## 🧠 Pipeline Architecture
+1. **Ingestion & Preprocessing:** * Ingests raw `.txt` files exported directly from WhatsApp group chats.
+   * Cleans the data using Regex to strip out system messages, timestamps, and metadata anomalies.
+2. **Vectorization & Storage:**
+   * Converts the cleaned message events into high-dimensional vector embeddings.
+   * Stores these embeddings efficiently using `pgvector` in a PostgreSQL database.
+3. **Retrieval Engine:**
+   * Utilizes Cosine Similarity algorithms to instantly retrieve the top-5 most relevant context matches based on a user's query.
+4. **Information Extraction & Synthesis:**
+   * Passes the retrieved context windows into the Gemini API with highly engineered system prompts.
+   * Distinguishes between casual chatter and critical project information, structuring the final output into strictly typed JSON (Action Items, Decisions Made, Key Facts).
 
-## Technical Implementation
+## 👤 My Individual Contributions
+As the core backend developer on this hackathon team, I took full ownership of building the backend architecture and the entire RAG pipeline from scratch. My specific contributions included:
 
-### Interesting Techniques
+* **Vector Database Architecture:** Architected the core RAG storage system by implementing `pgvector` to store chat message events as high-dimensional vector embeddings.
+* **Semantic Search Logic:** Designed and implemented the retrieval mechanism utilizing Cosine Similarity to accurately fetch the top-5 most relevant chat context matches for any given user query.
+* **Prompt Engineering & Data Structuring:** Engineered the Gemini API prompts to accurately extract unstructured text and categorize it. I designed the output pipeline to force the LLM to return strictly typed, database-ready JSON objects, completely eliminating hallucinated conversational text.
+* **Data Cleaning Pipeline:** Wrote the initial Regex preprocessing scripts to strip out WhatsApp system messages and redundant metadata before embedding the text.
 
-- **[Promise.race](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race) with Timeout Pattern**: Chat fetching uses race conditions to handle WhatsApp's sync delays after reconnection (up to 60s timeout)
-- **Round-Robin Load Balancing**: Cycles through multiple API keys with automatic failover when quota limits hit
-- **Queue-Based Concurrency Control**: Limits simultaneous AI requests to prevent rate limiting while maintaining priority ordering
-- **[LocalStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) Caching Strategy**: Persists chat lists, summaries, and Q&A history across sessions
-- **Exponential Backoff with Multi-Key Cycling**: Retries failed API calls by cycling through all available keys before waiting
-- **Dynamic CSS Grid Layouts**: Responsive three-column layout using [CSS Grid](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout)
-- **Real-time Status Polling**: Uses [setInterval](https://developer.mozilla.org/en-US/docs/Web/API/setInterval) for connection monitoring
+## 💡 Core Features
+* **Semantic Querying:** Users can ask plain-English questions about past conversations, and the system retrieves the exact context and synthesizes an answer.
+* **Automated Task Delegation:** Instantly converts chaotic chat logs into structured to-do lists based on context.
+* **Noise Reduction:** Filters out emojis, greetings, and irrelevant chatter to focus purely on high-value information.
 
-### Key Technologies
-
-- **[whatsapp-web.js](https://github.com/pedroslopez/whatsapp-web.js)** - WhatsApp Web API wrapper using Puppeteer
-- **[Google Generative AI](https://www.npmjs.com/package/@google/generative-ai)** - Gemini 2.5 Flash for text and vision models
-- **[sharp](https://sharp.pixelplumbing.com/)** - Image processing for media handling
-- **[Vite](https://vitejs.dev/)** - Frontend build tool with hot module replacement
-- **[React Router](https://reactrouter.com/)** - Client-side routing for multi-page navigation
-- **[axios](https://axios-http.com/)** - HTTP client with request/response interceptors
-- **[qrcode](https://www.npmjs.com/package/qrcode)** - QR code generation for WhatsApp authentication
-
-### Fonts
-
-- **[Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P)** - Primary UI font (retro pixel aesthetic)
-
-## Project Structure
-
-```
-ContextAI/
-├── backend/
-│   ├── whatsapp_ui/          # React frontend
-│   │   ├── src/
-│   │   │   ├── pages/        # Route components
-│   │   │   ├── App.jsx       # Root component
-│   │   │   └── styles.css    # Global styles
-│   │   ├── package.json
-│   │   └── vite.config.js
-│   ├── .wwebjs_auth/         # WhatsApp session storage
-│   ├── .wwebjs_cache/        # WhatsApp cache
-│   ├── whatsapp_api.js       # Main backend API
-│   ├── bot_config.json       # Bot group configuration
-│   ├── package.json
-│   └── .env                  # Environment variables
-├── .env.example              # Template for environment setup
-├── docker-compose.yml
-└── README.md
-```
-
-**[`backend/whatsapp_ui/`](backend/whatsapp_ui/)** - React frontend built with Vite. Includes multi-page routing for WhatsApp analysis, bot configuration, and dashboard Q&A.
-
-**[`backend/.wwebjs_auth/`](backend/.wwebjs_auth/)** - WhatsApp Web session files generated by whatsapp-web.js. Contains authentication state and prevents re-scanning QR codes.
-
-**[`backend/whatsapp_api.js`](backend/whatsapp_api.js)** - Express API server handling WhatsApp integration, AI processing, and bot responses. Implements queue-based concurrency control and multi-key load balancing.
-
-**[`backend/bot_config.json`](backend/bot_config.json)** - Bot configuration including enabled groups and personality assignments.
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ and npm
-- Google Gemini API keys ([Get them here](https://aistudio.google.com/app/apikey))
-- WhatsApp account
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Dr4cule/CtxtAI.git
-   cd ContextAI
-   ```
-
-2. **Install backend dependencies**
-   ```bash
-   cd backend
-   npm install
-   ```
-
-3. **Install frontend dependencies**
-   ```bash
-   cd whatsapp_ui
-   npm install
-   cd ..
-   ```
-
-4. **Configure environment variables**
-   
-   Copy `.env.example` to `.env` in the `backend` directory:
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Edit `.env` and add your Gemini API keys:
-   ```env
-   GEMINI_API_KEY=your_primary_key_here
-   GEMINI_API_KEY_2=your_second_key_here
-   GEMINI_API_KEY_3=your_third_key_here
-   ```
-   
-   You can add up to 5 keys by default (or unlimited by modifying [`whatsapp_api.js`](backend/whatsapp_api.js)).
-
-5. **Start the backend server**
-   ```bash
-   node whatsapp_api.js
-   ```
-   
-   The API server starts on `http://localhost:8002`
-
-6. **Start the frontend** (in a new terminal)
-   ```bash
-   cd backend/whatsapp_ui
-   npm run dev
-   ```
-   
-   The UI opens at `http://localhost:5173`
-
-7. **Authenticate with WhatsApp**
-   
-   - Open `http://localhost:5173` in your browser
-   - Scan the QR code with WhatsApp on your phone (Settings → Linked Devices)
-   - Wait for chat synchronization (may take 30-60 seconds for 500+ chats)
-
-### Bot Configuration
-
-Enable the bot for specific groups through the UI:
-
-1. Navigate to **WhatsApp** page
-2. Click **⚙️ Configure Bot**
-3. Toggle bot on/off
-4. Select groups to enable
-5. Choose personality per group (Hyderabadi, Film & Anime Guy, etc.)
-6. Save configuration
-
-Bot responds when:
-- @mentioned in enabled groups
-- Someone replies to its messages
-- Asked to summarize recent messages
-
-## API Key Management
-
-The system supports unlimited API keys with automatic load balancing:
-
-**Check key status:**
-```bash
-curl http://localhost:8002/api/keys/status
-```
-
-**Add keys dynamically (no restart needed):**
-```bash
-curl -X POST http://localhost:8002/api/keys/add \
-  -H "Content-Type: application/json" \
-  -d '{"apiKey": "AIzaSy..."}'
-```
-
-See [`API_KEYS_GUIDE.md`](backend/API_KEYS_GUIDE.md) for detailed key management.
-
-## Features
-
-### Chat Analysis
-- Analyze 50-1000 messages per chat
-- Deep mode: Comprehensive analysis with context and explanations
-- Moderate mode: Fast summary with key points
-- Batch processing for chats with 500+ messages
-
-### Bot Personalities
-- Hyderabadi: Witty local humor
-- Film & Anime Guy: Pop culture expert
-- Philosophy Enthusiast: Deep thinker
-- Tech Bro: Silicon Valley vibes
-- Gen Z Chaos: Internet culture master
-- Professional: Corporate communication
-
-### Dashboard Q&A
-Ask questions across all analyzed chats with consolidated AI responses.
-
-## Performance
-
-- **Success Rate**: ~95-99% with 3 API keys, ~99.9% with 5+ keys
-- **Chat Load Time**: 2-5 seconds for 500 chats (after initial sync)
-- **Analysis Speed**: 3-10 seconds per 100 messages (depending on API load)
-- **Concurrent Requests**: 2 simultaneous AI calls with automatic queuing
-
-## Architecture Notes
-
-The backend uses a hybrid approach:
-- Express REST API for HTTP endpoints
-- WhatsApp Web.js for WhatsApp integration
-- In-memory state for chat lists and bot memory.
-- File-based storage for configuration
-- LocalStorage on frontend for caching
-
-No database required - the app operates entirely from memory and WhatsApp's message history.
-
----
-
-**Team**: Gear5  
-**License**: MIT
+## ⚙️ How to Run
+1. Clone this repository.
+2. Ensure you have a PostgreSQL database running with the `pgvector` extension installed.
+3. Install dependencies: `pip install -r requirements.txt` *(Include psycopg2, google-generativeai, etc.)*
+4. Add your Gemini API key and Database URI to your environment variables.
+5. Place a WhatsApp chat `.txt` export in the `data/` directory.
+6. Run the embedding script to populate the database, followed by the query interface.
