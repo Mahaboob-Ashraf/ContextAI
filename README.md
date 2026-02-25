@@ -36,10 +36,3 @@ As the core backend developer on this hackathon team, I took full ownership of b
 * **Automated Task Delegation:** Instantly converts chaotic chat logs into structured to-do lists based on context.
 * **Noise Reduction:** Filters out emojis, greetings, and irrelevant chatter to focus purely on high-value information.
 
-## ⚙️ How to Run
-1. Clone this repository.
-2. Ensure you have a PostgreSQL database running with the `pgvector` extension installed.
-3. Install dependencies: `pip install -r requirements.txt` *(Include psycopg2, google-generativeai, etc.)*
-4. Add your Gemini API key and Database URI to your environment variables.
-5. Place a WhatsApp chat `.txt` export in the `data/` directory.
-6. Run the embedding script to populate the database, followed by the query interface.
